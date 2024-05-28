@@ -51,26 +51,26 @@ DECLARE		@NextYM			VARCHAR(6)
 CREATE TABLE #Title 
 (
 	  ColIDX		INT IDENTITY (0, 1)  NOT NULL -- 자동 인덱스 구성 
-	, Title			NVARCHAR(30)		 NOT NULL
-	, TitleSeq		NVARCHAR(8)			 NOT NULL
+	, Title			NVARCHAR(30)         NOT NULL
+	, TitleSeq		NVARCHAR(8)	     NOT NULL
 )
 
 
 
 CREATE TABLE #FixTable
 (
-	  RowIDX		INT IDENTITY (0, 1)  NOT NULL  -- 자동인덱스 구성 // 조회에 둘다 들어감 col, row
-	, CompanySeq	INT					 NOT NULL
+	  RowIDX		INT IDENTITY (0, 1)      NOT NULL  -- 자동인덱스 구성 // 조회에 둘다 들어감 col, row
+	, CompanySeq	INT				 NOT NULL
 	, InCompany		NVARCHAR(8) 		 NOT NULL
-	, CustSeq		INT					 NOT NULL
+	, CustSeq		INT			 NOT NULL
 	, CustName		NVARCHAR(20) 		 NOT NULL
-	, EggGradeSeq	INT					 NOT NULL
+	, EggGradeSeq	INT				 NOT NULL
 	, EggGrade		NVARCHAR(30) 		 NOT NULL
-	, EggTypeSeq	INT					 NOT NULL
+	, EggTypeSeq	INT				 NOT NULL
 	, EggType		NVARCHAR(30) 		 NOT NULL
-	, EggMTypeSeq	INT					 NOT NULL
+	, EggMTypeSeq	INT				 NOT NULL
 	, EggMType		NVARCHAR(30) 		 NOT NULL
-	, EggWeightSeq	INT					 NOT NULL
+	, EggWeightSeq	INT				 NOT NULL
 	, EggWeight		NVARCHAR(30) 		 NOT NULL
 	, MaxWeek		NVARCHAR(20)		 NOT NULL  -- 최고주령 
 )
@@ -78,8 +78,8 @@ CREATE TABLE #FixTable
 
 CREATE TABLE #DataTable -- 다이나믹테이블 고정테이블 헤더 날짜기준으로 인덱스 생성
 (	
-	  RowIDX		INT					 NOT NULL
-	, ColIDX		INT					 NOT NULL
+	  RowIDX		INT			 NOT NULL
+	, ColIDX		INT			 NOT NULL
 	, Qty			DECIMAL (19, 5)		 NOT NULL
 )
 
@@ -90,7 +90,7 @@ CREATE TABLE #DataTable -- 다이나믹테이블 고정테이블 헤더 날짜�
 
 INSERT INTO #Title (TitleSeq, Title)
 	 SELECT DISTINCT  STDYMD AS TitleSeq
-					, SUBSTRING(STDYMD, 5, 2) + '/' + RIGHT(STDYMD, 2) AS Title   -- '10/01' 이런식으로 헤더 구성
+			, SUBSTRING(STDYMD, 5, 2) + '/' + RIGHT(STDYMD, 2) AS Title   -- '10/01' 이런식으로 헤더 구성
 	   FROM joinbio_DelvPlanSimulationMake
 	   WHERE STDYM = @STDYM
 
@@ -118,18 +118,18 @@ INSERT INTO #FixTable ( CompanySeq, InCompany, CustSeq, CustName, EggGradeSeq, E
 					, ISNULL(C.MinorName, '')	AS  EggWeight
 					, ISNULL(D.MaxWeek, '' )
 	   FROM		 joinbio_DelvPlanSimulationMake	AS A WITH(NOLOCK)
-	   LEFT JOIN _TDACust						AS B WITH(NOLOCK)	ON A.CompanySeq	    = B.CompanySeq
-																   AND A.CustSeq		= B.CustSeq
-		LEFT JOIN _TDAUMinor           		 AS  C  WITH(NOLOCK) ON  A.CompanySeq  = C.CompanySeq
+	   LEFT JOIN _TDACust			 AS B WITH(NOLOCK)	ON A.CompanySeq	    = B.CompanySeq
+					            		   AND A.CustSeq		= B.CustSeq
+	   LEFT JOIN _TDAUMinor           	 AS  C  WITH(NOLOCK) ON  A.CompanySeq  = C.CompanySeq
                                                                  AND A.EggWeightSeq  = C.MinorSeq
                                                                  AND C.MajorSeq    = '2000226'
-        LEFT OUTER JOIN _TDAUMinor           AS  E  WITH(NOLOCK) ON  A.CompanySeq  = E.CompanySeq
+           LEFT OUTER JOIN _TDAUMinor           AS  E  WITH(NOLOCK) ON  A.CompanySeq  = E.CompanySeq
                                                                  AND A.EggGradeSeq = E.MinorSeq
                                                                  AND E.MajorSeq    = '2000192' 
-        LEFT OUTER JOIN _TDAUMinor           AS  F  WITH(NOLOCK) ON  A.CompanySeq  = F.CompanySeq
+           LEFT OUTER JOIN _TDAUMinor           AS  F  WITH(NOLOCK) ON  A.CompanySeq  = F.CompanySeq
                                                                  AND A.EggTypeSeq  = F.MinorSeq
                                                                  AND F.MajorSeq    = '2000227' 
-		LEFT OUTER JOIN _TDAUMinor           AS  G  WITH(NOLOCK) ON  A.CompanySeq  = G.CompanySeq
+	   LEFT OUTER JOIN _TDAUMinor           AS  G  WITH(NOLOCK) ON  A.CompanySeq  = G.CompanySeq
                                                                  AND A.EggMTypeSeq = G.MinorSeq
                                                                  AND G.MajorSeq    = '2000182' 
 	   LEFT JOIN (
