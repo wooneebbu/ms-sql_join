@@ -1,10 +1,4 @@
-USE [JOINDEV]
-GO
-/****** Object:  StoredProcedure [dbo].[joinbio_AntiReactionNoteQuery]    Script Date: 2023-06-05 오전 9:02:14 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
+
 /*************************************************************************************************
     설    명 - 항체역가조회
     작 성 일 - 2022.10.31
